@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+class CategoryController extends AbstractController
 {
 
     /**
@@ -33,39 +33,25 @@ class ProductController extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route('product-create', name: 'product_create')]
+    #[Route('category-create', name: 'category_create')]
     public function create(Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset(
-            $requestData['price'],
-            $requestData['name'],
-            $requestData['description'],
-            $requestData['category']
-        )) {
+        if (!isset($requestData['name'], $requestData['type'])) {
             throw new Exception("Invalid request data");
         }
 
-        $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
+        $category = new Category();
 
-        if (!$category) {
-            throw new Exception("Category with id " . $requestData['category'] . " not found");
-        }
+        $category->setName($requestData['name']);
+        $category->setType($requestData['type']);
 
-        $product = new Product();
-
-        $product
-            ->setPrice($requestData['price'])
-            ->setName($requestData['name'])
-            ->setDescription($requestData['description'])
-            ->setCategory($category);
-
-        $this->entityManager->persist($product);
+        $this->entityManager->persist($category);
 
         $this->entityManager->flush();
 
-        return new JsonResponse($product, Response::HTTP_CREATED);
+        return new JsonResponse($category,Response::HTTP_CREATED);
     }
 
     /**
