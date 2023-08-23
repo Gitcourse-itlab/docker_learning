@@ -2,22 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TestController extends AbstractController
 {
-
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private UserPasswordHasherInterface $passwordHasher;
 
     /**
      * @var EntityManagerInterface
@@ -25,43 +18,47 @@ class TestController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     /**
-     * @param UserPasswordHasherInterface $passwordHasher
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(
-        UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface      $entityManager
-    )
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->passwordHasher = $passwordHasher;
         $this->entityManager = $entityManager;
     }
 
     /**
-     * @param Request $request
      * @return JsonResponse
-     * @throws Exception
      */
     #[Route(path: "test", name: "app_test")]
-    public function test(Request $request): JsonResponse
+    public function test(): JsonResponse
     {
-        $pass = "test1234";
+        $user = $this->getUser();
 
-        $user = new User();
+        $products = $this->entityManager->getRepository(Product::class)->findAll();
 
-        $user->setEmail("test@gmail.com");
+        if (in_array(User::ROLE_ADMIN, $user->getRoles())) {
+            return new JsonResponse($products);
+        }
 
-        $hashedPassword = $this->passwordHasher->hashPassword(
-            $user,
-            $pass
-        );
+        return new JsonResponse($this->fetchProductsForUser($products));
+    }
 
-        $user->setPassword($hashedPassword);
+    /**
+     * @param array $products
+     * @return array
+     */
+    public function fetchProductsForUser(array $products): array
+    {
+        $fetchedProductsForUser = null;
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        /** @var Product $product */
+        foreach ($products as $product) {
+            $tmpProductData = $product->jsonSerialize();
 
-        return new JsonResponse();
+            unset($tmpProductData['description']);
+            $fetchedProductsForUser[] = $tmpProductData;
+        }
+
+        return $fetchedProductsForUser;
     }
 
 }
