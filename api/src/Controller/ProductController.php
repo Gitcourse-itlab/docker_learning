@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductController extends AbstractController
 {
@@ -21,11 +23,29 @@ class ProductController extends AbstractController
     private EntityManagerInterface $entityManager;
 
     /**
-     * @param EntityManagerInterface $entityManager
+     * @var DenormalizerInterface
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    private DenormalizerInterface $denormalizer;
+
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param DenormalizerInterface $denormalizer
+     * @param ValidatorInterface $validator
+     */
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        DenormalizerInterface  $denormalizer,
+        ValidatorInterface     $validator
+    )
     {
         $this->entityManager = $entityManager;
+        $this->denormalizer = $denormalizer;
+        $this->validator = $validator;
     }
 
     /**
@@ -38,14 +58,18 @@ class ProductController extends AbstractController
     {
         $requestData = json_decode($request->getContent(), true);
 
-        if (!isset(
-            $requestData['price'],
-            $requestData['name'],
-            $requestData['description'],
-            $requestData['category']
-        )) {
-            throw new Exception("Invalid request data");
-        }
+//        if (!isset(
+//            $requestData['price'],
+//            $requestData['name'],
+//            $requestData['description'],
+//            $requestData['category']
+//        )) {
+//            throw new Exception("Invalid request data");
+//        }
+
+        $product = $this->denormalizer->denormalize($requestData, Product::class, "array");
+
+        $errors = $this->validator->validate($product);
 
         $category = $this->entityManager->getRepository(Category::class)->find($requestData["category"]);
 
