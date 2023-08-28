@@ -2,16 +2,32 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ProductRepository;
-use App\Validator\Constraints\Product as ProductConstraint;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use App\Validator\Constraints\Product as ProductConstraint;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ProductConstraint]
+#[ApiResource(
+    collectionOperations: [
+        "get" => [
+            "method" => "GET",
+            "security" => "is_granted('" . User::ROLE_USER . "')"
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "method" => "GET"
+        ]
+    ],
+    attributes: [
+        "security" => "is_granted('" . User::ROLE_ADMIN . "') or is_granted('" . User::ROLE_USER . "')"
+    ]
+)]
 class Product implements JsonSerializable
 {
     #[ORM\Id]
@@ -28,15 +44,15 @@ class Product implements JsonSerializable
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
-
-    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
-    private ?Category $category = null;
+//
+//    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "products")]
+//    private ?Category $category = null;
 
 //    #[ORM\OneToOne(targetEntity: ProductInfo::class)]
 //    private ?ProductInfo $productInfo = null;
 
-    #[ORM\ManyToMany(targetEntity: Test::class)]
-    private Collection $test;
+//    #[ORM\ManyToMany(targetEntity: Test::class)]
+//    private Collection $test;
 
     /**
      * @return int|null
@@ -117,21 +133,21 @@ class Product implements JsonSerializable
         ];
     }
 
-    /**
-     * @return Category|null
-     */
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    /**
-     * @param Category|null $category
-     */
-    public function setCategory(?Category $category): void
-    {
-        $this->category = $category;
-    }
+//    /**
+//     * @return Category|null
+//     */
+//    public function getCategory(): ?Category
+//    {
+//        return $this->category;
+//    }
+//
+//    /**
+//     * @param Category|null $category
+//     */
+//    public function setCategory(?Category $category): void
+//    {
+//        $this->category = $category;
+//    }
 
 //    /**
 //     * @return ProductInfo|null
@@ -149,20 +165,20 @@ class Product implements JsonSerializable
 //        $this->productInfo = $productInfo;
 //    }
 
-    /**
-     * @return Collection
-     */
-    public function getTest(): Collection
-    {
-        return $this->test;
-    }
-
-    /**
-     * @param Collection $test
-     */
-    public function setTest(Collection $test): void
-    {
-        $this->test = $test;
-    }
+//    /**
+//     * @return Collection
+//     */
+//    public function getTest(): Collection
+//    {
+//        return $this->test;
+//    }
+//
+//    /**
+//     * @param Collection $test
+//     */
+//    public function setTest(Collection $test): void
+//    {
+//        $this->test = $test;
+//    }
 
 }
