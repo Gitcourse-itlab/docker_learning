@@ -27,8 +27,6 @@ class ProductValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, \App\Entity\Product::class);
         }
 
-        $this->context->addViolation("Error");
-
     }
 
 }
