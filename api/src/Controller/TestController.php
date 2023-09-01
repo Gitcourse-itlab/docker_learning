@@ -31,15 +31,15 @@ class TestController extends AbstractController
     #[Route(path: "test", name: "app_test")]
     public function test(): JsonResponse
     {
-        $user = $this->getUser();
+//        $user = $this->getUser();
+//
+//        $products = $this->entityManager->getRepository(Product::class)->findAll();
+//
+//        if (in_array(User::ROLE_ADMIN, $user->getRoles())) {
+//            return new JsonResponse($products);
+//        }
 
-        $products = $this->entityManager->getRepository(Product::class)->findAll();
-
-        if (in_array(User::ROLE_ADMIN, $user->getRoles())) {
-            return new JsonResponse($products);
-        }
-
-        return new JsonResponse($this->fetchProductsForUser($products));
+        return new JsonResponse("test");
     }
 
     /**

@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Action\CreateProductAction;
+use App\EntityListener\ProductEntityListener;
 use App\Repository\ProductRepository;
 use App\Validator\Constraints\Product as ProductConstraint;
 use Doctrine\DBAL\Types\Types;
@@ -26,7 +28,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
             "method"                  => "POST",
             "security"                => "is_granted('" . User::ROLE_USER . "')",
             "denormalization_context" => ["groups" => ["post:collection:product"]],
-            "normalization_context"   => ["groups" => ["get:item:product"]]
+            "normalization_context"   => ["groups" => ["get:item:product"]],
+            "controller"              => CreateProductAction::class
         ]
     ],
     itemOperations: [
@@ -44,6 +47,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
     "description"
 ])]
 #[ApiFilter(RangeFilter::class, properties: ['price'])]
+#[ORM\EntityListeners([ProductEntityListener::class])]
 class Product
 {
     #[ORM\Id]
@@ -166,6 +170,10 @@ class Product
         $this->category = $category;
 
         return $this;
+    }
+#[ORM\PostPersist]
+    public function test(){
+
     }
 
 }
