@@ -3,7 +3,7 @@ import { createContext, Suspense, useEffect, useMemo, useState } from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { CircularProgress } from "@mui/material";
 import nprogress from "nprogress";
-import NotFoundPage from "./page/notFound/NotFoundPage";
+import NotFoundPage from "./pages/notFound/NotFoundPage";
 import routes from "./routes/routes";
 import userRoutesConcat from "./routes/userRoutes";
 import getUserInfo from "./utils/getUserInfo";

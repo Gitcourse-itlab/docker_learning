@@ -27,6 +27,7 @@ const Login = () => {
     if (!authData) {
       return;
     }
+
     setLoading(true);
 
     axios.post(`/api/login-check`, authData).then(response => {

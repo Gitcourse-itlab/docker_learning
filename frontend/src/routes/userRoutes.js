@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import routes from "./routes";
 
-const GoodsPage = lazy(() => import("../page/goods/GoodsPage"));
+const GoodsPage = lazy(() => import("../pages/goods/GoodsPage"));
 
 const userRoutes = [
   {

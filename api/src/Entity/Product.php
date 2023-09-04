@@ -21,7 +21,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
     collectionOperations: [
         "get"  => [
             "method"                => "GET",
-            "security"              => "is_granted('" . User::ROLE_USER . "')",
             "normalization_context" => ["groups" => ["get:collection:product"]]
         ],
         "post" => [
@@ -87,6 +86,13 @@ class Product
         "post:collection:product"
     ])]
     private ?Category $category = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "products")]
+    #[Groups([
+        "get:item:product",
+        "post:collection:product"
+    ])]
+    private ?User $user = null;
 
     /**
      * @return int|null
@@ -171,9 +177,24 @@ class Product
 
         return $this;
     }
-#[ORM\PostPersist]
-    public function test(){
 
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $user
+     * @return Product
+     */
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
 }

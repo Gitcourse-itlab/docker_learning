@@ -1,7 +1,7 @@
 import { lazy } from "react";
 
-const HomePage = lazy(() => import("../page/home/HomePage"));
-const LoginPage = lazy(() => import("../page/login/LoginPage"));
+const HomePage = lazy(() => import("../pages/home/HomePage"));
+const LoginPage = lazy(() => import("../pages/login/LoginPage"));
 
 const routes = [
   {
