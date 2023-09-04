@@ -4,6 +4,7 @@ import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { Breadcrumbs, Link, Typography } from "@mui/material";
 import LoginForm from "./LoginForm";
+import Notification from "../elemets/notification/Notification";
 import { authentication } from "../../utils/authenticationRequest";
 import { responseStatus } from "../../utils/consts";
 import { AppContext } from "../../App";
@@ -14,11 +15,19 @@ const Login = () => {
   const { setAuthenticated, authenticated } = useContext(AppContext);
 
   const [authData, setAuthData] = useState();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState({
+    visible: false,
+    type: "",
+    message: ""
+  });
 
   const authenticationRequest = () => {
     if (!authData) {
       return;
     }
+    setLoading(true);
 
     axios.post(`/api/login-check`, authData).then(response => {
       if (response.status === responseStatus.HTTP_OK && response.data.token) {
@@ -26,8 +35,9 @@ const Login = () => {
         setAuthenticated(true);
       }
     }).catch(error => {
-      console.error(error.response.data.detail === "The presented password is invalid." ? "Invalid password" : error.response.data.detail, "error");
-    });
+      setError(error.response.data.message);
+      setNotification({ ...notification, visible: true, type: "error", message: error.response.data.message });
+    }).finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -40,6 +50,10 @@ const Login = () => {
 
   return (
     <>
+      <Notification
+        notification={notification}
+        setNotification={setNotification}
+      />
       <Helmet>
         <title>
           Sign in
@@ -52,8 +66,8 @@ const Login = () => {
         <Typography color="text.primary">Sign In</Typography>
       </Breadcrumbs>
       <LoginForm
-        authData={authData}
         setAuthData={setAuthData}
+        loading={loading}
       />
     </>
   );

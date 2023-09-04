@@ -1,7 +1,17 @@
 import React from "react";
-import { Button, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  TextField,
+  Typography
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-const LoginForm = ({ setAuthData }) => {
+const LoginForm = ({ setAuthData, loading }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -10,6 +20,10 @@ const LoginForm = ({ setAuthData }) => {
       password: event.target.password.value
     });
   };
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
@@ -24,17 +38,28 @@ const LoginForm = ({ setAuthData }) => {
         name="username"
         required
       />
-      <TextField
-        variant="standard"
-        id="password"
-        type="password"
-        label="Password"
-        name="password"
-        required
-      />
+      <FormControl variant="standard">
+        <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+        <Input
+          type={showPassword ? "text" : "password"}
+          id="password"
+          name="password"
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
       <Button
         variant="contained"
         type="submit"
+        disabled={loading}
       >
         Sign In
       </Button>
