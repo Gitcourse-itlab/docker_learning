@@ -17,7 +17,7 @@ const GoodsPage = () => {
       />
       <Can
         role={user.roles}
-        perform={goods.CLIENT}
+        perform={goods.USER}
         yes={() => <ClientGoodsContainer />}
       />
     </>

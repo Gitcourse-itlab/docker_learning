@@ -7,9 +7,9 @@ const rules = {
     ],
     dynamic: {}
   },
-  ROLE_CLIENT: {
+  ROLE_USER: {
     static: [
-      goods.CLIENT
+      goods.USER
     ],
     dynamic: {}
   }
