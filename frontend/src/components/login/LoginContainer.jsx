@@ -50,10 +50,12 @@ const Login = () => {
 
   return (
     <>
-      <Notification
-        notification={notification}
-        setNotification={setNotification}
-      />
+      {notification.visible &&
+        <Notification
+          notification={notification}
+          setNotification={setNotification}
+        />
+      }
       <Helmet>
         <title>
           Sign in
