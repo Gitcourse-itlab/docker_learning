@@ -8,7 +8,7 @@ const GoodsContainer = () => {
     <>
       <Helmet>
         <title>
-          Sign in
+          Goods
         </title>
       </Helmet>
       <Breadcrumbs aria-label="breadcrumb">
@@ -22,7 +22,7 @@ const GoodsContainer = () => {
       </Typography>
       <div className="page-style">
         <code>
-          //TODO <br/><br />
+          //TODO <br /><br />
         </code>
       </div>
     </>
