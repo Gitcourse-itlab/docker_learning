@@ -66,7 +66,7 @@ const GoodsContainer = () => {
         </Link>
         <Typography color="text.primary">Goods</Typography>
       </Breadcrumbs>
-      <Typography variant="h4" component="h1" mt={1}>
+      <Typography variant="h4" component="h1" mt={1} mb={2}>
         Goods
       </Typography>
       <GoodsFilter

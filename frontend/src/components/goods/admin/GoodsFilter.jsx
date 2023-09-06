@@ -1,4 +1,5 @@
 import React from "react";
+import { TextField, Typography } from "@mui/material";
 
 const GoodsFilter = ({ filterData, setFilterData }) => {
 
@@ -11,10 +12,15 @@ const GoodsFilter = ({ filterData, setFilterData }) => {
   };
 
   return <>
-    <div>
-      <label htmlFor="name">Name</label>
-      <input
+    <div className="filter">
+      <div className="filter__header">
+        <Typography variant="h6" component="h6" mb={1}>
+          Filter
+        </Typography>
+      </div>
+      <TextField
         id="name"
+        label="Name"
         type="text"
         name="name"
         defaultValue={filterData.name ?? ""}
