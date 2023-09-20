@@ -5,9 +5,8 @@ FROM php:${PHP_VERSION}-fpm-alpine3.12
 #Composer for Production
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN mkdir -p /cronfiles
-RUN touch /var/log/php_errors.log
-RUN chmod -R 777 /var/log/php_errors.log
+RUN touch /var/log/php_errors.log && touch /var/log/testcommand.log && mkdir -p /cronfiles
+RUN chmod -R 777 /var/log/*
 
 RUN set -ex && apk --no-cache add libxml2-dev
 
@@ -24,4 +23,9 @@ RUN apk add --update --virtual .build-deps autoconf g++ make zlib-dev curl-dev \
   && echo -e "error_log = /var/log/php_errors.log" > /usr/local/etc/php/conf.d/error-logging.ini \
   && rm -rf /var/cache/apk/*
 
+ADD crontab/crontab.ini /cronfiles/crontab.ini
+RUN /usr/bin/crontab /cronfiles/crontab.ini
+
 WORKDIR /var/www/courselab/api
+
+CMD /usr/local/sbin/php-fpm -D ; /usr/sbin/crond -f -l 8
